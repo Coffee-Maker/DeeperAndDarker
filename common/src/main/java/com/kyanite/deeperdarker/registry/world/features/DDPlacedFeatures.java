@@ -35,8 +35,14 @@ public class DDPlacedFeatures {
     public static final Supplier<PlacedFeature> OTHERSIDE_PILLAR = registerPlacedFeature("otherside_pillar", () -> new PlacedFeature(Holder.direct(DDConfiguredFeatures.SCULKSTONE_PILLAR.get()), commonOrePlacement(60, PlacementUtils.FULL_RANGE)));
     public static final Supplier<PlacedFeature> ECHO_TREE_SPAWN = registerPlacedFeature("echo_tree_placed", () -> new PlacedFeature(Holder.direct(DDConfiguredFeatures.ECHO_TREE.get()), echoTreePlacement()));
 
-    public static final Supplier<PlacedFeature> GLOOM_SCULK_VEGETATION = registerPlacedFeature("gloom_sculk_vegetation", () -> new PlacedFeature(Holder.direct(DDConfiguredFeatures.GLOOM_SCULK_VEGETATION_BASE.get()), vegetationPlacement()));
-    public static final Supplier<PlacedFeature> GLOOMSTONE_PILLAR = registerPlacedFeature("gloom_otherside_pillar", () -> new PlacedFeature(Holder.direct(DDConfiguredFeatures.GLOOM_PILLAR.get()), gloomPillarPlacement()));
+    public static final Supplier<PlacedFeature> GLOOM_SCULK_VEGETATION =
+            registerPlacedFeature("gloom_sculk_vegetation",
+                    () -> new PlacedFeature(Holder.direct(DDConfiguredFeatures.GLOOM_SCULK_VEGETATION_BASE.get()), vegetationPlacement())
+            );
+    public static final Supplier<PlacedFeature> GLOOMSTONE_PILLAR =
+            registerPlacedFeature("gloom_otherside_pillar",
+                    () -> new PlacedFeature(Holder.direct(DDConfiguredFeatures.GLOOM_PILLAR.get()), gloomPillarPlacement())
+            );
 
 
     public static final Supplier<PlacedFeature> GLOOMSLATE = registerPlacedFeature("gloomslate", () -> new PlacedFeature(Holder.direct(DDConfiguredFeatures.GLOOMSLATE.get()), gloomSlatePlacement()));
@@ -78,7 +84,8 @@ public class DDPlacedFeatures {
         ImmutableList.Builder<PlacementModifier> builder = ImmutableList.builder();
         builder.add(CountOnEveryLayerPlacement.of(25));
         builder.add(InSquarePlacement.spread());
-        builder.add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE);
+        // world surface seems to be the bedrock ceiling
+        builder.add(PlacementUtils.FULL_RANGE);
         builder.add(BiomeFilter.biome());
         return builder.build();
     }
