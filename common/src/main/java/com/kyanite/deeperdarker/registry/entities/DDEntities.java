@@ -21,7 +21,7 @@ public class DDEntities {
     public static final Supplier<EntityType<SculkSnapperEntity>> SCULK_SNAPPER = RegistryHelper.registerEntity("sculk_snapper", SculkSnapperEntity::new, MobCategory.MONSTER, 1, 1, 10);
     public static final Supplier<EntityType<EchoerEntity>> ECHOER = RegistryHelper.registerEntity("echoer", EchoerEntity::new, MobCategory.MONSTER, 0.85f, 2.45f, 10);
 
-//    public static final Supplier<EntityType<ScavengerEntity>> SCAVENGER = RegistryHelper.registerEntity("scavenger", ScavengerEntity::new, MobCategory.MONSTER, 1, 1, 10);
+    public static final Supplier<EntityType<ScavengerEntity>> SCAVENGER = RegistryHelper.registerEntity("scavenger", ScavengerEntity::new, MobCategory.MONSTER, 1, 1, 10);
 
     public static final Supplier<EntityType<SculkWormEntity>> SCULK_WORM = RegistryHelper.registerEntity("shriek_worm", SculkWormEntity::new, MobCategory.MONSTER, 1.5f, 5.7f, 10);
     public static final Supplier<EntityType<DDBoat>> BOAT = RegistryHelper.registerEntity("boat", DDBoat::new, MobCategory.MISC, 1.375F, 0.5625F, 10);

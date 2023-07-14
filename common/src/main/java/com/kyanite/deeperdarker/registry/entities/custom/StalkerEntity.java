@@ -32,9 +32,11 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
@@ -60,6 +62,9 @@ import java.util.function.Predicate;
 
 public class StalkerEntity extends ActionAnimatedEntity implements IAnimatable, VibrationListener.VibrationListenerConfig, IDisturbanceListener {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+
+    private static final float BASE_SPEED = 0.2f;
+    private static final float SPEED_MULTIPLIER_WITHOUT_VASE = 3f;
 
     private static final EntityDataAccessor<Integer> RING_COOLDOWN = SynchedEntityData.defineId(StalkerEntity.class, EntityDataSerializers.INT);
 
@@ -107,10 +112,12 @@ public class StalkerEntity extends ActionAnimatedEntity implements IAnimatable, 
         this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(1, new RandomStrollGoal(this, 0.75D));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
     }
 
     public static AttributeSupplier.Builder attributes() {
-        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 250).add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ATTACK_DAMAGE, 17.0D);
+        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 250).add(Attributes.MOVEMENT_SPEED, BASE_SPEED).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ATTACK_DAMAGE, 17.0D);
     }
 
     public boolean isPerformingAction() {
@@ -167,21 +174,18 @@ public class StalkerEntity extends ActionAnimatedEntity implements IAnimatable, 
 
                 for(LivingEntity livingEntity : level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPosition()).inflate(20, 8, 20))) {
                     if(!livingEntity.isDeadOrDying() && livingEntity.getMobType() != DDTypes.SCULK) {
-                        if(livingEntity instanceof Player player)
+                        if(livingEntity instanceof Player player && !player.isDeadOrDying())
+                        {
                             this.bossEvent.addPlayer((ServerPlayer) player);
+                            if(getCurrentState() == RING) {
+                                player.hurt(damageSource, 1.4f);
+                                player.knockback(0.2f, -0.4f, -0.4f);
+                            }
+                        }
 
-                        if(getCurrentState() == RING) {
+                        else if(getCurrentState() == RING) {
                             livingEntity.hurt(damageSource, 0.8f);
                             livingEntity.knockback(0.2f, 1, 1);
-                        }
-                    }
-                }
-                for(Player player : level.getNearbyPlayers(TARGETING_CONDITIONS, this, this.getBoundingBox().inflate(20.0D, 8.0D, 20.0D))) {
-                    if(!player.isDeadOrDying()) {
-                        this.bossEvent.addPlayer((ServerPlayer) player);
-                        if(getCurrentState() == RING) {
-                            player.hurt(damageSource, 1.4f);
-                            player.knockback(0.2f, -0.4f, -0.4f);
                         }
                     }
                 }
@@ -201,7 +205,7 @@ public class StalkerEntity extends ActionAnimatedEntity implements IAnimatable, 
         entity.setState(EMERGE);
         entity.moveTo(pos, 0, 0);
         level.addFreshEntity(entity);
-        entity.setNoAi(true);
+        entity.setNoAi(true); // Set NoAI during the spawn animation
         return entity;
     }
 
@@ -257,7 +261,7 @@ public class StalkerEntity extends ActionAnimatedEntity implements IAnimatable, 
     }
 
     @Override
-    public void stateTick(EntityState entityState) {
+    public void stateAnimationTick(EntityState entityState) {
         if(entityState == EMERGE) {
             if(this.getAnimationTime() < 25 && this.getAnimationTime() > 5) {
                 playSound(this.getBlockStateOn().getSoundType().getHitSound());
@@ -269,7 +273,7 @@ public class StalkerEntity extends ActionAnimatedEntity implements IAnimatable, 
     @Override
     public float getSpeed() {
         if(isPerformingAction()) return 0;
-        return !this.entityData.get(HAS_VASE) ? 0.6f : super.getSpeed();
+        return super.getSpeed() * (!this.entityData.get(HAS_VASE) ? 1 : SPEED_MULTIPLIER_WITHOUT_VASE);
     }
 
     @Override

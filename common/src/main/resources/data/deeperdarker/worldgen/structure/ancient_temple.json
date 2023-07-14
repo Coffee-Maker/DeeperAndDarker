@@ -14,7 +14,7 @@
     }
   },
   "start_pool": "deeperdarker:ancient_temple",
-  "step": "minecraft:underground_structures",
+  "step": "underground_structures",
   "terrain_adaptation": "beard_thin",
   "use_expansion_hack": false
 }

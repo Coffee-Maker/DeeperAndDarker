@@ -2,6 +2,7 @@ package com.kyanite.deeperdarker.registry.entities.custom;
 
 import com.kyanite.deeperdarker.DeeperAndDarker;
 import com.kyanite.deeperdarker.miscellaneous.DDUtils;
+import com.kyanite.deeperdarker.registry.entities.custom.ai.FlyingWanderGoal;
 import com.kyanite.deeperdarker.registry.entities.custom.ai.GoToNearestStructureGoal;
 import com.kyanite.deeperdarker.registry.particle.DDParticleUtils;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,10 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
@@ -49,12 +54,12 @@ public class ScavengerEntity extends TamableAnimal implements IAnimatable {
     }
     @Override
     protected void registerGoals() {
-       // this.goalSelector.addGoal(3, new FloatGoal(this));
-      //  this.goalSelector.addGoal(1, new FlyingWanderGoal(this));
-       // this.goalSelector.addGoal(2, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(3, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new FlyingWanderGoal(this));
+        this.goalSelector.addGoal(2, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(3, new GoToNearestStructureGoal(this, 2.3D));
-        //this.goalSelector.addGoal(9, new PanicGoal(this, 1.7D));
-      //  this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 10));
+        this.goalSelector.addGoal(9, new PanicGoal(this, 1.7D));
+        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 10));
     }
 
     @Override

@@ -39,7 +39,10 @@ public class GeyserBlock extends Block {
     private void bounceUp(Entity pEntity, BlockPos pos) {
         pEntity.hurt(DamageSource.GENERIC, 2);
         if(pEntity instanceof LivingEntity livingEntity) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 125, 1, true, false, false));
+            // Commenting this out since I think it should be a real hazard
+//            livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 125, 1, true, false, false));
+
+            livingEntity.setRemainingFireTicks(100); // 5 seconds of fire damage
         }
 
         Vec3 vec3 = pEntity.getDeltaMovement();
