@@ -82,8 +82,7 @@ public class DDPlacedFeatures {
 
     public static List<PlacementModifier> vegetationPlacement() {
         ImmutableList.Builder<PlacementModifier> builder = ImmutableList.builder();
-        builder.add(CountOnEveryLayerPlacement.of(25));
-        builder.add(InSquarePlacement.spread());
+        builder.add(CountOnEveryLayerPlacement.of(18));
         // world surface seems to be the bedrock ceiling
         builder.add(PlacementUtils.FULL_RANGE);
         builder.add(BiomeFilter.biome());
