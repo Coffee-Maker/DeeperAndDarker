@@ -48,11 +48,9 @@ public class DDConfiguredFeatures {
     public static final Supplier<ConfiguredFeature<?, ?>> GLOOM_SCULK_VEGETATION_BASE =
             RegistryHelper.registerConfiguredFeature("gloom_sculk_vegetation",
                     // I basically just replicated how the PATCH_FOREST_GRASS works in vanilla mc.
-                    // It throws a bunch of errors in logs and has some bugs when 2 sculk tendrils generate on top of each other
-                    // Also it generates way too many cacti, but at least it generates anything at all :)
                     () -> new ConfiguredFeature<>(Feature.RANDOM_PATCH,
                             new RandomPatchConfiguration(
-                                    // x y z spread (maybe)
+                                    // tries, xz spread, y spread
                                     32, 7, 3,
                                     PlacementUtils.onlyWhenEmpty(
                                             Feature.SIMPLE_BLOCK,
